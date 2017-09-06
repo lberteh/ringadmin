@@ -1,0 +1,7 @@
+/* You can define font-family with whatever name you want. 
+This name is then used to select this font family with css */
+@font-face {
+  font-family: 'Sports Jersey'; 
+  src: url('../Fonts/sportsjersey.ttf')  format('truetype')
+}
+

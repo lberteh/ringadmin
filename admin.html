@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Ring</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+    <!-- This is the file where the custom fonts are declared with @font-face -->
+    <link rel="stylesheet" href="Assets/CSS/Fonts.css">
+</head>
+
+<body>
+   
+    <h1 class="text-center">Ring Engravement</h1>
+ 
+    <div class="row">
+        <div class="col-md-offset-1 col-md-5">
+            <h2 class="text-center">Settings</h2>
+            <div class="form-group">
+                <label for="curve">Bezier Curve</label>
+                <!-- This field displays the bezier curve for the personalized text
+                It can be hidden, if not, make sure it's readonly
+                It's important to set the id as the contents are of this field are manipulated with js -->
+                <input type="text" class="form-control" id="curve" name="curve" readonly >
+            </div>
+            <div class="form-group">
+                <label for="labelText">Label Text ( Optional )</label>
+                <!-- This field is optional as the user might not want to have a label for 
+                the personalized text input box -->
+                <input type="text" class="form-control" id="labelText" name="labelText" value="">
+            </div>  
+            <div class="form-group">
+                <label for="text">Default Text ( Optional )</label>
+                <!-- Also optional as the user might not want to have a 
+                pre defined text displayed on the product -->
+                <input type="text" class="form-control" id="text" name="text" value="Avetti Commerce">
+            </div>  
+            <div class="form-group">
+                <label for="maxChar">Max Characters to Engrave ( required )</label>
+                <!-- The admin has to limit the amount of characters as the product won't have
+                unlimited space for engraving -->
+                <input type="text" class="form-control" id="maxChar" name="maxChar" required>
+            </div>  
+            <div class="form-group col-md-8" style="padding-left: 0">
+                <label>Select Font Size ( 5 max, required )</label>
+                <!-- Slider to select font size, these numbers are sizes in pixels -->
+                <input id="fontSizeSlider" type="range" min="12" max="24" value="18" step="1"> 
+            </div>
+            <div class="input-group col-md-4" style="padding-right: 0; padding-top:12px; padding-left:inherit">
+                <!-- Disbled input to display the current font size in the slider -->
+                <input id="fontSizeText" class="form-control" type="text" disabled> 
+                <!-- Button to add selected size to list of available sizes for the product -->
+                <span class="input-group-btn">
+                    <button id="addSizeBtn" class="btn btn-default" type="button">Add to List</button>
+                </span>
+            </div>
+            <div class="row" style="margin:auto 0">
+                <div class="form-group col-md-8" style="padding-left: 0">
+                    <!-- Select list with added sizes. User can select and remove a size -->
+                    <select multiple class="form-control" id="selectedFontSizes" size="5"></select>
+                </div>
+                <div class="form-group col-md-4" style="padding-top:12px; padding-right:0">    
+                    <!-- Button to remove a size -->
+                    <button id="removeSizeBtn" class="btn btn-block btn-default" type="button">Remove Selected</button>        
+                </div>
+            </div>
+            
+            <div class="form-group" style="clear:both">
+                <label>Select Font Family (required)</label>
+                <!-- We need to figure out a way to dynamically populate this acording to our clients wishes -->
+                <select id="fontFamilySelector" class="form-control">
+                    <option style="font-family:cursive">Cursive</option>
+                    <option style="font-family:helvetica">Helvetica</option>
+                    <option style="font-family:indie flower">Indie Flower</option>
+                    <option style="font-family:sports jersey">Sports Jersey</option>
+                </select>
+            </div>      
+            <div class="row" style="margin:auto 0">
+                <div class="form-group col-md-8" style="padding-left: 0">
+                    <!-- Select list with added fonts. User can select and remove a font -->
+                    <select multiple class="form-control" id="selectedFontFamilies" size="5">
+                    
+                    </select>
+                </div>
+                <div class="form-group col-md-4" style="padding-top:12px; padding-right:0">
+                   
+                        <button id="addFontBtn" class="btn btn-block btn-default" type="button">Add Font</button>
+                        <button id="removeFontBtn" class="btn btn-block btn-default" type="button">Remove Selected</button>
+                  
+                </div>
+            </div> 
+            <div class="input-group" style="margin-bottom: 15px;">
+                <span class="input-group-btn">
+                    <button id="setDefaultFamilyBtn" class="btn btn-default" type="button">Set Font as Default</button>
+                </span>
+                <input id="defaultFontFamily" class="form-control" type="text" disabled>                  
+            </div>
+            <div class="form-group">
+                <label for="curve">Drag and Drop Control Points to Adjust the Curve</label>
+            </div>
+            <div class="form-check">
+                <label class="form-check-label">
+                    Hide Curve
+                    <input class="form-check-input" type="checkbox" name="cBox" id="cBox" value="">
+                </label>
+            </div>
+    
+               
+            <div id="canvasDiv" style="background: url(Assets/Images/silverRing.png) no-repeat">
+               
+            </div>
+
+            <div class="form-group col-md-4" style="padding-top:12px; padding-right:0">
+                <button id="previewBtn" class="btn btn-block btn-primary" type="button">Preview</button>        
+            </div>
+                 
+            <div id="point" hidden />
+        </div>
+    </div>
+        
+
+        <div class="col-md-offset-1 col-md-4" >
+            <h2 class="text-center" >Preview</h2>
+            <div id="previewDiv">      
+            </div>
+            <div id="previewCanvasDiv" style="background: url(Assets/Images/silverRing.png) no-repeat">         
+            </div>
+            
+        </div>    
+  
+
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+    <script>
+    WebFont.load({
+        google: {
+            families: ['Indie Flower']
+        },
+        custom: {
+            families: ['Sports Jersey'],
+            urls: ['Assets/CSS/Fonts.css']
+        }
+    });
+    </script>
+    <script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+    
+    <script src="test2.js"></script>
+
+    <script>
+        var addSizeBtn = document.getElementById("addSizeBtn")
+        addSizeBtn.addEventListener("click", addFontSizeToList)
+        var removeSizeBtn = document.getElementById("removeSizeBtn")
+        removeSizeBtn.addEventListener("click", function(){
+            var list = document.getElementById("selectedFontSizes")
+            let option = list.options[list.selectedIndex]
+            removeFromList(list, option)
+        })
+        var addFontBtn = document.getElementById("addFontBtn")
+        addFontBtn.addEventListener("click", addFontFamilyToList)
+        var removeFontBtn = document.getElementById("removeFontBtn")
+        removeFontBtn.addEventListener("click", function(){
+            list = document.getElementById("selectedFontFamilies")
+            option = list.options[list.selectedIndex]
+            removeFromList(list, option)
+        })
+        var setDefaultFamilyBtn = document.getElementById("setDefaultFamilyBtn")
+        setDefaultFamilyBtn.addEventListener("click", function(){
+            var dropdown = document.getElementById("fontFamilySelector")
+            let selected = dropdown.options[dropdown.selectedIndex].text
+            input = document.getElementById("defaultFontFamily")
+            input.value = selected
+        })
+        
+
+        function addFontSizeToList()
+        {
+            var list = document.getElementById("selectedFontSizes")
+            var selected = document.getElementById("fontSizeText").value
+               
+            if(list.options.length < 5)   
+            {
+                addToList(list, selected)
+                list.order()
+            }         
+        }
+
+        function addFontFamilyToList()
+        {
+            var list = document.getElementById("selectedFontFamilies")
+            var dropdown = document.getElementById("fontFamilySelector")
+            var selected = dropdown.options[dropdown.selectedIndex].text
+               
+            addToList(list, selected)
+            list.order()                
+        }
+
+        // adds a new option to html select element
+        function addToList(list, value)
+        {
+            if(!list.contains(value))
+            {
+                let option = document.createElement('option');
+                option.innerHTML = value
+                option.value = value
+                list.appendChild(option)
+            }
+            else 
+                console.log('option already added')
+        }
+
+        function removeFromList(list, optionToRemove)
+        {
+            list.removeChild(optionToRemove)
+        }
+
+        function getValuesFromList(list)
+        {
+            let values = [], i
+            for(i = 0; i < list.length; i++)
+                values.push(list.options[i].text)
+
+            return values
+        }
+
+        HTMLSelectElement.prototype.order = function()
+        {
+            let options = this.options,
+                length  = options.length,
+                temp    = [],
+                parts,
+                i
+
+            for(i = 0; i < length; i++)
+                temp[i] = options[i].value
+
+            temp.sort()
+
+            for(i = 0; i < length; i++)
+            {
+                options[i].text  = temp[i]
+                options[i].value = temp[i] 
+            }
+        } 
+
+        // helper function to check for option duplicate
+        HTMLSelectElement.prototype.contains = function( value ) 
+        {
+            for ( var i = 0, l = this.options.length; i < l; i++ ) 
+            {
+                if ( this.options[i].value == value ) 
+                    return true;
+            }
+            return false;
+        }
+
+        
+        
+    </script>
+    
+</body>
+
+</html>
+
